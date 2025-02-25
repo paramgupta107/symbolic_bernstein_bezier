@@ -50,7 +50,7 @@ expr = bb.to_expr()
 Convert a sympy expression to a Bernstein–Bézier representation. It will fail if the sympy expression cannot be converted to a polynomial
 
 ```python
-# Given an expression in t1 and t2.
+# Given an expression in u and v.
 expr = u**2 + 2*u*v + v**2
 vars = [u, v]
 bb_from_expr = BernsteinBezier.from_expr(expr, vars)
@@ -116,6 +116,7 @@ bb_boundary = bb.extract_boundary(0, -1)
 Compose the Bernstein–Bézier representation with other Bernstein–Bézier objects or sympy expressions. Required a list of `BernsteinBezier` or sympy expressions that represent the substitution for each variable.
 
 ```python 
+s, t = sympy.symbols("s t")
 g1 = BernsteinBezier.from_expr(s**2, [s]) 
 g2 = BernsteinBezier.from_expr(s + t, [s, t]) 
 bb_composed1 = bb.compose([g1, g2], [s, t]) 
@@ -142,7 +143,13 @@ Subdivide the Bernstein–Bézier representation along a given dimension using D
 # Subdivide along dimension 0 at t = 1/2.
 bb_left, bb_right = bb.subdivide(0, t=sympy.Rational(1/2))
 ```
+### Simplify Coefficients
 
+Simplify the sympy expressions for all coefficients.
+
+```python
+bb_simplified = bb.simplify_coeffs()
+```
 
 ## License
 

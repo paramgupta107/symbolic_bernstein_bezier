@@ -430,6 +430,16 @@ class BernsteinBezier:
         right_bb = BernsteinBezier(right_coeffs.flatten(), self.degrees, self.vars)
         return left_bb, right_bb
 
+    def simplify_coeffs(self) -> "BernsteinBezier":
+        """
+        Simplify the coefficients of the Bernstein Bézier representation.
+
+        Returns:
+            BernsteinBezier: The result of the simplification.
+        """
+        new_coeffs = np.vectorize(lambda x: sympy.simplify(x))(self.coeffs)
+        new_degrees = self.degrees.copy()
+        return BernsteinBezier(new_coeffs, new_degrees, self.vars)
 
     def __repr__(self):
         return f"BernsteinBezier(coeffs={self.coeffs}, degrees={self.degrees})"

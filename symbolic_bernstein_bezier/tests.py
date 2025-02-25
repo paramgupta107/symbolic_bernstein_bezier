@@ -538,5 +538,17 @@ class TestBernsteinBezierSubdivide(unittest.TestCase):
         self.assertTrue(sympy.simplify(right_expr - expected_right) == 0,
                         f"3D right subdivision (dim1): expected {expected_right}, got {right_expr}")
 
+class TestSimplifyCoeffs(unittest.TestCase):
+    def test_simplify_coeffs(self):
+        x = sympy.symbols("x", real=True)
+        # Define unsimplified coefficients (e.g., (x**2 - 1)/(x - 1) should simplify to x + 1)
+        coeffs = [ (x**2 - 1)/(x - 1), (x**2 - 1)/(x - 1) + 2, (x**2 - 1)/(x - 1) - 3 ]
+        degrees = [2]
+        vars = [x]
+        bb = BernsteinBezier(coeffs, degrees, vars)
+        bb_simpl = bb.simplify_coeffs()
+        self.assertTrue(all(sympy.simplify(c - s) == 0 for c, s in zip(coeffs, bb_simpl.get_all_coeffs())),
+                        "Coefficients not simplified correctly")
+
 if __name__ == "__main__":
     unittest.main()
