@@ -441,5 +441,21 @@ class BernsteinBezier:
         new_degrees = self.degrees.copy()
         return BernsteinBezier(new_coeffs, new_degrees, self.vars)
 
+    def to_matrix(self, vars: List[sympy.Symbol]) -> np.ndarray:
+        """
+        Generate a matrix to represent the Bernstein Bézier coefficients with respect to given vars.
+        The size of the matrix will be (number of vars * number of coefficients).
+        vars * matrix will yield the coefficients in row-major order.
+        """
+        num_vars = len(vars)
+        num_coeffs = np.prod([d + 1 for d in self.degrees])
+        matrix = np.zeros((num_vars, num_coeffs), dtype=object)
+        # Fill the matrix with coefficients.
+        for idx in np.ndindex(*self.coeffs.shape):
+            coeff = self.coeffs[idx]
+            row = np.array([coeff.coeff(vars[i]) for i in range(num_vars)])
+            ## add the row to the matrix at the appropriate index.
+            matrix[:, np.ravel_multi_index(idx, self.coeffs.shape)] = row
+        return matrix
     def __repr__(self):
         return f"BernsteinBezier(coeffs={self.coeffs}, degrees={self.degrees})"

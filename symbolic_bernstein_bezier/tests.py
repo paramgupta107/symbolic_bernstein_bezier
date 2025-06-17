@@ -2,6 +2,7 @@ import unittest
 import sympy
 from BernsteinBezier import BernsteinBezier
 import itertools
+import numpy as np
 
 class TestBernsteinBezierConversion(unittest.TestCase):
     def test_1d(self):
@@ -549,6 +550,27 @@ class TestSimplifyCoeffs(unittest.TestCase):
         bb_simpl = bb.simplify_coeffs()
         self.assertTrue(all(sympy.simplify(c - s) == 0 for c, s in zip(coeffs, bb_simpl.get_all_coeffs())),
                         "Coefficients not simplified correctly")
+
+class TestToMatrix(unittest.TestCase):
+    def test_to_matrix(self):
+        u, v = sympy.symbols("u v")
+        a, b, c, d = sympy.symbols("a b c d")
+        coeffs = [a+b, b+c, c+d, d+a,
+                b+c, c+d, d+a, a+b,
+                c+d, d+a, a+b, b+c,
+                d+a, a+b, b+c, c+d]
+
+        degrees = [3, 3]
+        vars = [u, v]
+        bb = BernsteinBezier(coeffs, degrees, vars)
+
+        matrix = bb.to_matrix((a, b, c, d))
+        expected = np.array([[1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0],
+                            [1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0],
+                            [0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1],
+                            [0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1]])
+        self.assertTrue(np.array_equal(matrix, expected),
+                            f"Expected matrix:\n{expected}\nGot:\n{matrix}")
 
 if __name__ == "__main__":
     unittest.main()

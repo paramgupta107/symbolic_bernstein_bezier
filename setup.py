@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='symbolic_bernstein_bezier',
-    version='0.1.0',
+    version='0.1.1',
     author='Param Gupta',
     author_email='p.gupta@ufl.edu',
     description='Bernstein Bezier operations using SymPy',
